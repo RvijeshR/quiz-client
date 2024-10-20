@@ -1,25 +1,36 @@
-import logo from './logo.svg';
-import './App.css';
+import React from 'react';
+import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import Login from './components/Login';
+import Register from './components/Register';
+import TeacherRegister from './components/TeacherRegister';
+import StudentRegister from './components/StudentRegister';
+import MainLayout from './Layouts/MainLayout';
+import MainRoutes from './routes/MainRoutes';
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+    const token = useSelector((state) => state.auth.token); // Get the token from Redux
+
+    return (
+        <Router>
+            <div>
+                {token ? (
+                    <MainLayout>
+                        <MainRoutes />
+                    </MainLayout>
+                ) : (
+                    <Routes>
+                        <Route path="/" element={<Login />} />
+                        <Route path="/register" element={<Register />} />
+                        <Route path="/register/teacher" element={<TeacherRegister />} />
+                        <Route path="/register/student" element={<StudentRegister />} />
+                        <Route path="/*" element={<Navigate to="/" />} />
+                    </Routes>
+                )}
+            </div>
+        </Router>
+    );
 }
 
 export default App;
+
